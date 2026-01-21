@@ -24,14 +24,34 @@ jobs:
         with:
           gradle-version: "8.8"
 
+      - name: Find Gradle project dir
+        id: find
+        shell: bash
+        run: |
+          set -e
+          if ls build.gradle* settings.gradle* >/dev/null 2>&1; then
+            echo "dir=." >> "$GITHUB_OUTPUT"
+          else
+            hit="$(find . -maxdepth 4 -type f \( -name 'settings.gradle' -o -name 'settings.gradle.kts' -o -name 'build.gradle' -o -name 'build.gradle.kts' \) | head -n 1)"
+            if [ -z "$hit" ]; then
+              echo "No Gradle build files found." >&2
+              echo "Repo contents:" >&2
+              ls -la >&2
+              exit 1
+            fi
+            echo "dir=$(dirname "$hit")" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Using project dir: $(cat $GITHUB_OUTPUT | sed -n 's/^dir=//p')"
+
       - name: Build
-        run: gradle clean build --no-daemon --stacktrace
+        working-directory: ${{ steps.find.outputs.dir }}
+        run: gradle clean build --no-daemon --stacktrace --info
 
       - name: Upload mod jar(s)
         uses: actions/upload-artifact@v4
         with:
           name: built-jars
           path: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
-            !build/libs/*-javadoc.jar
+            ${{ steps.find.outputs.dir }}/build/libs/*.jar
+            !${{ steps.find.outputs.dir }}/build/libs/*-sources.jar
+            !${{ steps.find.outputs.dir }}/build/libs/*-javadoc.jar
