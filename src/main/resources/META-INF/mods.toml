@@ -1,0 +1,40 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+issueTrackerURL=""
+
+[[mods]]
+modId="cataclysmomcompat"
+version="${file.jarVersion}"
+displayName="Cataclysm x OverhauledMusic Compat"
+description='''
+Plays custom Cataclysm boss themes while cleanly muting OverhauledMusic so nothing overlaps.
+'''
+
+[[dependencies.cataclysmomcompat]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.cataclysmomcompat]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.cataclysmomcompat]]
+modId="cataclysm"
+mandatory=false
+versionRange="*"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.cataclysmomcompat]]
+modId="overhauledmusic"
+mandatory=false
+versionRange="*"
+ordering="NONE"
+side="CLIENT"
